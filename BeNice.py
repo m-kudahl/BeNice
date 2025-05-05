@@ -1,31 +1,53 @@
-import pandas
 import keyboard
+import pandas
 
-# read csv into DataFrame
 words = pandas.read_csv('words.csv')
 
 # create dictionary with columns from seperate dataframes to match the values
 replacements = dict(zip(words['badword'], words['goodword']))
 
-def auto_replace():
+# define a letter buffer
+buffer = ''
+
+def keypress(key):
+    global buffer
+
+    # reset the buffer on space and enter
+    if key.name == 'space' or key.name == 'enter':
+        buffer = ''  
+        return
+    
+    # delete last character from buffer on backspace
+    elif key.name == 'backspace':
+        buffer = buffer[:-1]
+        return
+    
+    # ugly elif check for combination keys
+    # this can be done better
+    elif key.name == 'skift' or key.name == 'shift' or key.name == 'return' or key.name == 'ctrl':
+        return
+
+    # else add letter to buffer
+    else:
+        buffer += key.name
+
+    # Now check the buffer for matches
     for badword, goodword in replacements.items():
 
-        # define callback, needed for keyboard word listener
-        # make sure badword and goodword capture the current values
-        def callback(x=badword, y=goodword):
-                for i in range(len(x)+1):
-                     keyboard.send('backspace')
-                keyboard.write(f"{y} ")
+        # force buffer to lowercase to capture uppercase
+        # probably not the best way to do this
+        if buffer.lower() == badword.lower():
+            
+            # Delete letters from badword
+            for letters in badword:
+                keyboard.send('backspace')
 
-        # call add_word_listener and use the defined callback on 'badword' trigger
-        keyboard.add_word_listener(
-            badword,
-            callback,
-            triggers=['space','enter'],
-            match_suffix=False,
-            timeout=0
-        )
-    # wait forever, infinite runtime
-    keyboard.wait()
+            # write goodword
+            keyboard.write(goodword)
 
-auto_replace()
+            # Reset buffer
+            buffer = ''
+
+keyboard.on_press(keypress)
+    # let's wait! (forever)
+keyboard.wait()
