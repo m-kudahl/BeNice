@@ -13,29 +13,26 @@ buffer = ""
 def keypress(key):
     global buffer
 
-    # reset the buffer on space and enter
-    if key.name == "space" or key.name == "enter":
-        buffer = ""
-        return
+    # switch (match case) statement for the key being pressed
+    match key.name:
 
-    # delete last character from buffer on backspace
-    elif key.name == "backspace":
-        buffer = buffer[:-1]
-        return
+        # reset buffer on space or enter key
+        case "space" | "enter":
+            buffer = ""
+            return
 
-    # ugly elif check for combination keys
-    # this can be done better
-    elif (
-        key.name == "skift"
-        or key.name == "shift"
-        or key.name == "return"
-        or key.name == "ctrl"
-    ):
-        return
+        # delete last letter in buffer on backspace
+        case "backspace":
+            buffer = buffer[:-1]
+            return
 
-    # else add letter to buffer
-    else:
-        buffer += key.name
+        # prevent buttons that are not letters from being added to the buffer
+        case "skift" | "shift" | "return" | "ctrl":
+            return
+
+        # else, add the keypress to the buffer
+        case _:
+            buffer += key.name
 
     # Now check the buffer for matches
     for badword, goodword in replacements.items():
