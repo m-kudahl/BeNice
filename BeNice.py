@@ -11,6 +11,7 @@ buffer = ""
 
 
 def keypress(key):
+    # declare buffer as global variable
     global buffer
 
     # switch (match case) statement for the key being pressed
