@@ -3,8 +3,8 @@ import pandas
 
 words = pandas.read_csv("words.csv")
 
-# create dictionary with columns from seperate dataframes to match the values
-replacements = dict(zip(words["badword"], words["goodword"]))
+# use badword column as index and read the goodword column
+replacements = words.set_index("badword")["goodword"].to_dict()
 
 # define a letter buffer
 buffer = ""
