@@ -10,7 +10,7 @@
 
 ###
 
-<h1 align="center">Be Nice</h1>
+<h1 align="center">Be Nice!</h1>
 
 ###
 
